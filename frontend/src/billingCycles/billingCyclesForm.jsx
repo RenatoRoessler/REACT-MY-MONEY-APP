@@ -1,23 +1,30 @@
 import React, { Component } from 'react'
-import { reduxForm, field, Field } from 'redux-form'
+import { connect } from 'react-redux'
+import { bindActionCreators} from 'redux'
+import { reduxForm, Field } from 'redux-form'
+import { init } from './billingCyclesActions'
+import  labelAndInput  from '../common/form/labelAndInput'
 
 
 class BillingCyclesForm extends Component {
     render() {
-        const { handleSubmit } = this.props
+        const { handleSubmit, readOnly } = this.props
         return (
             <form role='form' onSubmit={handleSubmit}>
                 <div className='box-doby'>
-                    <Field name='name' component='input' />
-                    <Field name='month' component='input' />
-                    <Field name='year' component='input' />
+                    <Field name='name' component={labelAndInput} label='Nome' cols='12 4' placeholder='infrome o nome'  readOnly={readOnly}/>
+                    <Field name='month' component={labelAndInput} label='Mês' cols='12 4' placeholder='infrome o mês' readOnly={readOnly}/>
+                    <Field name='year' component={labelAndInput} label='Ano' cols='12 4' placeholder='infrome o nao' readOnly={readOnly}/>
                 </div>
                 <div className='box-footer'>
                     <button type='submit' className='btn btn-primary'>Submit</button>
+                    <button type='button' className='btn btn-default' onClick={this.props.init}>Cancelar</button>
                 </div>
             </form>
         )
     }
 }
 
-export default reduxForm({ form: 'billingCycleForm' })(BillingCyclesForm)
+BillingCyclesForm = reduxForm({ form: 'billingCyclesForm', destroyOnUnmount: false })(BillingCyclesForm)
+const mapDispatchToProps = dispatch => bindActionCreators({init}, dispatch)
+export default connect(null, mapDispatchToProps)(BillingCyclesForm)
