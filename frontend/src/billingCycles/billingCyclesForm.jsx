@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators} from 'redux'
-import { reduxForm, Field } from 'redux-form'
+import { reduxForm, Field, formValueSelector } from 'redux-form'
 import { init } from './billingCyclesActions'
-import  labelAndInput  from '../common/form/labelAndInput'
+import  LabelAndInput  from '../common/form/labelAndInput'
+import CreditList from './creditList'
+
 
 
 class BillingCyclesForm extends Component {
     render() {
-        const { handleSubmit, readOnly } = this.props
+        const { handleSubmit, readOnly, credits } = this.props
         return (
             <form role='form' onSubmit={handleSubmit}>
-                <div className='box-doby'>
-                    <Field name='name' component={labelAndInput} label='Nome' cols='12 4' placeholder='infrome o nome'  readOnly={readOnly}/>
-                    <Field name='month' component={labelAndInput} label='Mês' cols='12 4' placeholder='infrome o mês' readOnly={readOnly}/>
-                    <Field name='year' component={labelAndInput} label='Ano' cols='12 4' placeholder='infrome o nao' readOnly={readOnly}/>
+                <div className='box-body'>
+                    <Field name='name' component={LabelAndInput} label='Nome' cols='12 4' placeholder='infrome o nome'  readOnly={readOnly}/>
+                    <Field name='month' component={LabelAndInput} label='Mês' cols='12 4' placeholder='infrome o mês' readOnly={readOnly}/>
+                    <Field name='year' component={LabelAndInput} label='Ano' cols='12 4' placeholder='infrome o nao' readOnly={readOnly}/>
+                    <CreditList cols='12 6' list={credits} readOnly={readOnly}></CreditList>
                 </div>
                 <div className='box-footer'>
                     <button type='submit' className={`btn btn-${this.props.submitClass}`}>{this.props.submitLabel}</button>
@@ -26,5 +29,7 @@ class BillingCyclesForm extends Component {
 }
 
 BillingCyclesForm = reduxForm({ form: 'billingCyclesForm', destroyOnUnmount: false })(BillingCyclesForm)
+const selector = formValueSelector('billingCyclesForm')
+const mapStateToProps = state => ({credits: selector(state, 'credits')})
 const mapDispatchToProps = dispatch => bindActionCreators({init}, dispatch)
-export default connect(null, mapDispatchToProps)(BillingCyclesForm)
+export default connect(mapStateToProps, mapDispatchToProps)(BillingCyclesForm)
